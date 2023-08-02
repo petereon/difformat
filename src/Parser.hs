@@ -1,5 +1,6 @@
 module Parser where
 
+import Data.List (partition)
 import Data.List.Split (splitOn)
 
 data LineRange = LineRange Int Int deriving (Show, Eq)
@@ -8,7 +9,13 @@ data Line = AddedLine String | RemovedLine String | ContextLine String deriving 
 
 data Hunk = Hunk LineRange LineRange [Line] deriving (Show, Eq)
 
-data FileDiff = FileDiff String String [Hunk] deriving (Show, Eq)
+data FileDiff = FileDiff
+  { oldFileName :: String,
+    newFileName :: String,
+    indexLine :: String,
+    hunks :: [Hunk]
+  }
+  deriving (Show, Eq)
 
 removeFirstChar :: String -> String
 removeFirstChar [] = [] -- The empty string has no first character
@@ -36,3 +43,8 @@ parseHunk (header : rest) = Hunk from to (map parseHunkLine rest)
   where
     (from, to) = parseHunkHeader header
 parseHunk _ = error "Invalid hunk input"
+
+splitFileDiffs :: String -> [String]
+splitFileDiffs input
+  | null input = []
+  | otherwise = map ("diff --git" ++) (tail $ splitOn "diff --git" input)
