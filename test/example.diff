@@ -1,0 +1,62 @@
+diff --git a/file1.txt b/file1.txt
+index 1234567..9876543 100644
+--- a/file1.txt
++++ b/file1.txt
+@@ -1,5 +1,5 @@
+ This is a sample file.
+-These lines are part of the original content.
++This line is modified.
+ Add a new line here.
+ Another change in content.
+-More lines in the original file.
++Additional line added in the middle.
+ New content at the end of the file.
+diff --git a/file2.txt b/file2.txt
+index abcdefg..gfedcba 100644
+--- a/file2.txt
++++ b/file2.txt
+@@ -1,4 +1,4 @@
+ Some content in file 2.
+-This line is part of the original content.
++Modified line in file 2.
+ Another change here.
+-More lines in the original file2.
++Additional content added in the middle.
+ End of file2.
+diff --git a/file3.txt b/file3.txt
+index xyz123..321zyx 100644
+--- a/file3.txt
++++ b/file3.txt
+@@ -1,6 +1,6 @@
+ File 3 content here.
+-This line is part of the original content.
++This line is changed.
+ Another change in file 3.
+-More lines in the original file3.
++Additional lines in the middle.
+ New content at the end.
+ End of file3.
+diff --git a/file4.txt b/file4.txt
+index 111aaa..222bbb 100644
+--- a/file4.txt
++++ b/file4.txt
+@@ -5,8 +5,8 @@ This is a sample file.
+ Middle of the file.
+
+ A change here.
+-Original content.
++Modified line here.
+ Another change in the middle.
+-Some lines in between.
++Line added after several lines.
+ More content.
+
+@@ -25,6 +25,6 @@ End of file.
+ Additional content here.
+
+ More changes.
+-Even more lines.
+-Some other content.
++An extra line added.
++Content modified again.
+ End of file.

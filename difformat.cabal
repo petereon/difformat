@@ -1,0 +1,66 @@
+cabal-version:   3.0
+name:            difformat
+version:         0.0.1
+
+-- synopsis:
+-- description:
+license:         MIT
+license-file:    LICENSE
+author:          Peter Výboch
+maintainer:      pvyboch1@gmail.com
+
+-- copyright:
+category:        Development
+build-type:      Simple
+extra-doc-files: CHANGELOG.md
+
+-- extra-source-files:
+
+common warnings
+  ghc-options: -Wall
+
+library
+  import:           warnings
+  exposed-modules:  Parser
+
+  -- other-modules:
+  -- other-extensions:
+  build-depends:
+    , base   ^>=4.12.0.0
+    , split
+
+  hs-source-dirs:   src
+  default-language: Haskell2010
+
+executable difformat
+  import:           warnings
+  main-is:          Main.hs
+
+  -- other-modules:
+  -- other-extensions:
+  build-depends:
+    , base       ^>=4.12.0.0
+    , difformat
+
+  hs-source-dirs:   app
+  default-language: Haskell2010
+
+test-suite difformat-test
+  import:             warnings
+  default-language:   Haskell2010
+
+  -- other-modules:
+  -- other-extensions:
+  type:               exitcode-stdio-1.0
+  hs-source-dirs:     test
+  main-is:            Spec.hs
+  build-depends:
+    , base           ^>=4.12.0.0
+    , difformat
+    , hspec
+    , hspec-contrib
+    , HUnit
+    , QuickCheck
+
+  other-modules:      ParserSpec
+  build-tool-depends: hspec-discover:hspec-discover >=2 && <3
