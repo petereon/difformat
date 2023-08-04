@@ -1,6 +1,8 @@
+{-# OPTIONS_GHC -Wno-name-shadowing #-}
+
 module Parser where
 
-import Data.List (partition)
+import Data.List (isInfixOf)
 import Data.List.Split (splitOn)
 
 data LineRange = LineRange Int Int deriving (Show, Eq)
@@ -27,8 +29,8 @@ parsePair (_ : rest) = case splitOn "," rest of
   _ -> error "Invalid range input"
 parsePair _ = error "Invalid range input"
 
-parseHunkHeader :: String -> (LineRange, LineRange)
-parseHunkHeader header = case splitOn " " header of
+parseHunkRangeHeader :: String -> (LineRange, LineRange)
+parseHunkRangeHeader header = case splitOn " " header of
   (_ : x : y : _) -> (parsePair x, parsePair y)
   _ -> error "Invalid hunk header input"
 
@@ -41,10 +43,27 @@ parseHunkLine _ = error "Invalid hunk line input"
 parseHunk :: [String] -> Hunk
 parseHunk (header : rest) = Hunk from to (map parseHunkLine rest)
   where
-    (from, to) = parseHunkHeader header
-parseHunk _ = error "Invalid hunk input"
+    (from, to) = parseHunkRangeHeader header
+parseHunk [] = error "Invalid hunk input"
 
 splitFileDiffs :: String -> [String]
 splitFileDiffs input
   | null input = []
-  | otherwise = map ("diff --git" ++) (tail $ splitOn "diff --git" input)
+  | otherwise = tail $ map unlines (splitListOnPredicate (lines input) (isInfixOf "diff --git"))
+
+parseFileDiff :: String -> FileDiff
+parseFileDiff input = FileDiff (cleanFileName oldFileName) (cleanFileName newFileName) indexLine (map parseHunk hunks)
+  where
+    (_ : indexLine : oldFileName : newFileName : hunkBlob) = lines input
+    hunks = tail $ splitListOnPredicate hunkBlob (isInfixOf "@@")
+
+cleanFileName :: String -> String
+cleanFileName = drop 1 . dropWhile (/= '/')
+
+splitListOnPredicate :: [a] -> (a -> Bool) -> [[a]]
+splitListOnPredicate elements pred = foldr f [[]] elements
+  where
+    f line (x : xs)
+      | pred line = [] : (line : x) : xs
+      | otherwise = (line : x) : xs
+    f _ [] = []
