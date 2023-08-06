@@ -21,12 +21,15 @@ common warnings
 
 library
   import:           warnings
-  exposed-modules:  Parser
+  exposed-modules:
+    Parser
+    Transformer
 
   -- other-modules:
   -- other-extensions:
   build-depends:
-    , base   ^>=4.12.0.0
+    , base     ^>=4.12.0.0
+    , process
     , split
 
   hs-source-dirs:   src
@@ -62,5 +65,8 @@ test-suite difformat-test
     , HUnit
     , QuickCheck
 
-  other-modules:      ParserSpec
+  other-modules:
+    ParserSpec
+    TransformerSpec
+
   build-tool-depends: hspec-discover:hspec-discover >=2 && <3

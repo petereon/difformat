@@ -38,7 +38,7 @@ parseHunkLine :: String -> Line
 parseHunkLine ('+' : rest) = AddedLine rest
 parseHunkLine ('-' : rest) = RemovedLine rest
 parseHunkLine (' ' : rest) = ContextLine rest
-parseHunkLine _ = error "Invalid hunk line input"
+parseHunkLine line = error $ "Invalid hunk line input `" ++ line ++ "`"
 
 parseHunk :: [String] -> Hunk
 parseHunk (header : rest) = Hunk from to (map parseHunkLine rest)
@@ -58,7 +58,7 @@ parseFileDiff input = FileDiff (cleanFileName oldFileName) (cleanFileName newFil
     hunks = tail $ splitListOnPredicate hunkBlob (isInfixOf "@@")
 
 cleanFileName :: String -> String
-cleanFileName = drop 1 . dropWhile (/= '/')
+cleanFileName = drop 1 . (\name -> (if "/" `isInfixOf` name then dropWhile (/= '/') name else name)) . drop 3
 
 splitListOnPredicate :: [a] -> (a -> Bool) -> [[a]]
 splitListOnPredicate elements pred = foldr f [[]] elements

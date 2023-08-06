@@ -1,8 +1,8 @@
 module Main where
 
-import qualified MyLib (someFunc)
+import Parser (parseFileDiff, splitFileDiffs)
 
 main :: IO ()
 main = do
-  putStrLn "Hello, Haskell!"
-  MyLib.someFunc
+  contents <- getContents
+  print $ map parseFileDiff (splitFileDiffs contents)
