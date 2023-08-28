@@ -4,7 +4,7 @@ module Transformer where
 
 import Parser (FileDiff (..), Hunk (..), Line (..))
 import System.Exit
-import System.Process
+import System.Process (readCreateProcessWithExitCode, shell)
 
 transformFileDiff :: (String -> IO String) -> FileDiff -> IO FileDiff
 transformFileDiff transformer (FileDiff oldFileName newFileName indexLine hunks) = do
@@ -13,14 +13,17 @@ transformFileDiff transformer (FileDiff oldFileName newFileName indexLine hunks)
 
 transformHunk :: (String -> IO String) -> Hunk -> IO Hunk
 transformHunk transformer (Hunk from to lines) = do
-  newLines <- mapM (transformLine transformer) lines
+  newLines <- transformLines transformer lines
   return $ Hunk from to newLines
 
-transformLine :: (String -> IO String) -> Line -> IO Line
-transformLine transformer (AddedLine line) = do
-  newLine <- transformer line
-  return $ AddedLine newLine
-transformLine _ line = return line
+-- NOTES
+-- All the lines including the context will be formatted
+-- If leading whitespace is stripped by formatter it should be returned to the line
+-- Option should be provided to do in-place replacement or not
+
+transformLines :: (String -> IO String) -> [Line] -> IO [Line]
+transformLines f lines = do
+  return lines
 
 runCommand :: String -> String -> IO String
 runCommand command input = do

@@ -41,9 +41,12 @@ parseHunkLine (' ' : rest) = ContextLine rest
 parseHunkLine line = error $ "Invalid hunk line input `" ++ line ++ "`"
 
 parseHunk :: [String] -> Hunk
-parseHunk (header : rest) = Hunk from to (map parseHunkLine rest)
+parseHunk (header : rest) = Hunk from to (map parseHunkLine rest')
   where
     (from, to) = parseHunkRangeHeader header
+    rest' = case last rest of
+      ('\\' : _) -> init rest
+      _ -> rest
 parseHunk [] = error "Invalid hunk input"
 
 splitFileDiffs :: String -> [String]
