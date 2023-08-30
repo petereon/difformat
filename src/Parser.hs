@@ -47,6 +47,7 @@ removeFirstChar (_ : xs) = xs
 parsePair :: String -> LineRange
 parsePair (_ : rest) = case splitOn "," rest of
   (x : y : _) -> LineRange (read x) (read y)
+  (x : _) -> LineRange (read x) 1
   _ -> error "Invalid range input"
 parsePair _ = error "Invalid range input"
 

@@ -19,6 +19,7 @@ spec = do
     it "parses hunk header" $ do
       parseHunkRangeHeader "@@ -1,2 +1,2 @@" `shouldBe` (LineRange 1 2, LineRange 1 2)
       parseHunkRangeHeader "@@ -2,5 +3,8 @@" `shouldBe` (LineRange 2 5, LineRange 3 8)
+      parseHunkRangeHeader "@@ -1 +1,2 @@" `shouldBe` (LineRange 1 1, LineRange 1 2)
 
     it "parses hunk line" $ do
       parseHunkLine "+hello" `shouldBe` AddedLine "hello"
