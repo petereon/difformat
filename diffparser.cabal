@@ -1,5 +1,5 @@
 cabal-version:   3.0
-name:            difformat
+name:            diffparser
 version:         0.0.1
 
 -- synopsis:
@@ -21,9 +21,7 @@ common warnings
 
 library
   import:           warnings
-  exposed-modules:
-    Parser
-    Transformer
+  exposed-modules:  Parser
 
   -- other-modules:
   -- other-extensions:
@@ -35,20 +33,20 @@ library
   hs-source-dirs:   src
   default-language: Haskell2010
 
-executable difformat
+executable diffparser
   import:           warnings
   main-is:          Main.hs
 
   -- other-modules:
   -- other-extensions:
   build-depends:
-    , base       ^>=4.12.0.0
-    , difformat
+    , base        ^>=4.12.0.0
+    , diffparser
 
   hs-source-dirs:   app
   default-language: Haskell2010
 
-test-suite difformat-test
+test-suite diffparser-test
   import:             warnings
   default-language:   Haskell2010
 
@@ -59,14 +57,11 @@ test-suite difformat-test
   main-is:            Spec.hs
   build-depends:
     , base           ^>=4.12.0.0
-    , difformat
+    , diffparser
     , hspec
     , hspec-contrib
     , HUnit
     , QuickCheck
 
-  other-modules:
-    ParserSpec
-    TransformerSpec
-
+  other-modules:      ParserSpec
   build-tool-depends: hspec-discover:hspec-discover >=2 && <3

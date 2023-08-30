@@ -5,11 +5,27 @@ module Parser where
 import Data.List (isInfixOf)
 import Data.List.Split (splitOn)
 
+class JSONifiable a where
+  toJSON :: a -> String
+
 data LineRange = LineRange Int Int deriving (Show, Eq)
+
+instance JSONifiable LineRange where
+  toJSON (LineRange from to) = "{\"from\":" ++ show from ++ ",\"range\":" ++ show to ++ "}"
 
 data Line = AddedLine String | RemovedLine String | ContextLine String deriving (Show, Eq)
 
+instance JSONifiable Line where
+  toJSON (AddedLine line) = "{\"type\":\"added\",\"line\":" ++ show line ++ "}"
+  toJSON (RemovedLine line) = "{\"type\":\"removed\",\"line\":" ++ show line ++ "}"
+  toJSON (ContextLine line) = "{\"type\":\"context\",\"line\":" ++ show line ++ "}"
+
 data Hunk = Hunk LineRange LineRange [Line] deriving (Show, Eq)
+
+instance JSONifiable Hunk where
+  toJSON (Hunk from to lines) = "{\"oldRange\":" ++ toJSON from ++ ",\"newRange\":" ++ toJSON to ++ ",\"lines\":[" ++ init lines' ++ "]}"
+    where
+      lines' = foldr (\line acc -> toJSON line ++ "," ++ acc) "" lines
 
 data FileDiff = FileDiff
   { oldFileName :: String,
@@ -18,6 +34,11 @@ data FileDiff = FileDiff
     hunks :: [Hunk]
   }
   deriving (Show, Eq)
+
+instance JSONifiable FileDiff where
+  toJSON (FileDiff oldFileName newFileName indexLine hunks) = "{\"oldName\":\"" ++ oldFileName ++ "\",\"newName\":\"" ++ newFileName ++ "\",\"index\":\"" ++ indexLine ++ "\",\"hunks\":[" ++ init hunks' ++ "]}"
+    where
+      hunks' = foldr (\hunk acc -> toJSON hunk ++ "," ++ acc) "" hunks
 
 removeFirstChar :: String -> String
 removeFirstChar [] = [] -- The empty string has no first character
