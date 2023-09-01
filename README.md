@@ -1,6 +1,8 @@
 # diffparser
 Tool to convert the output of `git diff` to JSON for further processing.
 
+> Please note, for the most part this is an exercise of parsing simple structured text in Haskell and I do not promise support or feature-completeness.
+
 ## Example
 
 Consider a `git diff` output looking as such:
