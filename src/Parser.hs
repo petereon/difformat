@@ -2,8 +2,11 @@
 
 module Parser where
 
-import Data.List (isInfixOf)
-import Data.List.Split (splitOn)
+import Data.List (isInfixOf, isPrefixOf)
+import Data.List.Split (splitOn, startsWith)
+import Debug.Trace
+
+debug = flip trace
 
 class JSONifiable a where
   toJSON :: a -> String
@@ -52,9 +55,10 @@ parsePair (_ : rest) = case splitOn "," rest of
 parsePair _ = error "Invalid range input"
 
 parseHunkRangeHeader :: String -> (LineRange, LineRange)
-parseHunkRangeHeader header = case splitOn " " header of
+parseHunkRangeHeader header = case splitOn " " cleanedHeader of
   (_ : x : y : _) -> (parsePair x, parsePair y)
   _ -> error "Invalid hunk header input"
+  where cleanedHeader = splitOn "@@" header !! 1
 
 parseHunkLine :: String -> Line
 parseHunkLine ('+' : rest) = AddedLine rest
@@ -80,7 +84,7 @@ parseFileDiff :: String -> FileDiff
 parseFileDiff input = FileDiff (cleanFileName oldFileName) (cleanFileName newFileName) indexLine (map parseHunk hunks)
   where
     (_ : indexLine : oldFileName : newFileName : hunkBlob) = lines input
-    hunks = tail $ splitListOnPredicate hunkBlob (isInfixOf "@@")
+    hunks = tail $ splitListOnPredicate hunkBlob (isPrefixOf "@@")
 
 cleanFileName :: String -> String
 cleanFileName = drop 1 . (\name -> (if "/" `isInfixOf` name then dropWhile (/= '/') name else name)) . drop 3
