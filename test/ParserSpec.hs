@@ -1,6 +1,6 @@
 module ParserSpec where
 
-import Parser (FileDiff (..), Hunk (..), Line (..), LineRange (..), parseFileDiff, parseHunk, parseHunkLine, parseHunkRangeHeader, parsePair, removeFirstChar, splitFileDiffs, splitListOnPredicate)
+import Parser (FileDiff (..), Hunk (..), Line (..), LineRange (..), parseFileDiff, parseHunk, parseHunkLine, parseHunkRangeHeader, parsePair, splitFileDiffs, splitListOnPredicate)
 import Test.Hspec (Spec, describe, it, shouldBe)
 
 spec :: Spec
@@ -9,9 +9,6 @@ spec = do
     it "splits list on predicate" $ do
       splitListOnPredicate [1, 2, 3, 4, 5, 6, 7, 8, 9] (== 5) `shouldBe` [[1, 2, 3, 4], [5, 6, 7, 8, 9]]
   describe "parsing hunk" $ do
-    it "removes first char from the string" $ do
-      removeFirstChar "-1,2" `shouldBe` "1,2"
-
     it "parses a single pair into integer tuple" $ do
       parsePair "-1,2" `shouldBe` LineRange 1 2
       parsePair "-2,5" `shouldBe` LineRange 2 5

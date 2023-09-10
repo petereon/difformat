@@ -3,10 +3,7 @@
 module Parser where
 
 import Data.List (isInfixOf, isPrefixOf)
-import Data.List.Split (splitOn, startsWith)
-import Debug.Trace
-
-debug = flip trace
+import Data.List.Split (splitOn)
 
 class JSONifiable a where
   toJSON :: a -> String
@@ -42,10 +39,6 @@ instance JSONifiable FileDiff where
   toJSON (FileDiff oldFileName newFileName indexLine hunks) = "{\"oldName\":\"" ++ oldFileName ++ "\",\"newName\":\"" ++ newFileName ++ "\",\"index\":\"" ++ indexLine ++ "\",\"hunks\":[" ++ init hunks' ++ "]}"
     where
       hunks' = foldr (\hunk acc -> toJSON hunk ++ "," ++ acc) "" hunks
-
-removeFirstChar :: String -> String
-removeFirstChar [] = [] -- The empty string has no first character
-removeFirstChar (_ : xs) = xs
 
 parsePair :: String -> LineRange
 parsePair (_ : rest) = case splitOn "," rest of
