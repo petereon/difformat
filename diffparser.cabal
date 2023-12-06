@@ -6,7 +6,7 @@ version:         0.0.1
 -- description:
 license:         MIT
 license-file:    LICENSE
-author:          Peter Výboch
+author:          Peter Vyboch
 maintainer:      pvyboch1@gmail.com
 
 -- copyright:
@@ -21,7 +21,9 @@ common warnings
 
 library
   import:           warnings
-  exposed-modules:  Parser
+  exposed-modules:
+    Parser
+    ToJSON
 
   -- other-modules:
   -- other-extensions:
