@@ -21,14 +21,15 @@ common warnings
 
 library
   import:           warnings
-  exposed-modules:
-    Parser
-    ToJSON
+  exposed-modules:  Parser
 
   -- other-modules:
   -- other-extensions:
   build-depends:
-    , base     ^>=4.12.0.0
+    , aeson
+    , base        ^>=4.12.0.0
+    , bytestring
+    , flow
     , process
     , split
 

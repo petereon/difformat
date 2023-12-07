@@ -19,9 +19,10 @@ spec = do
       parseHunkRangeHeader "@@ -1 +1,2 @@" `shouldBe` (LineRange 1 1, LineRange 1 2)
 
     it "parses hunk line" $ do
-      parseHunkLine "+hello" `shouldBe` AddedLine "hello"
-      parseHunkLine "-hello" `shouldBe` RemovedLine "hello"
-      parseHunkLine " hello" `shouldBe` ContextLine "hello"
+      parseHunkLine "+hello" `shouldBe` Just (AddedLine "hello")
+      parseHunkLine "-hello" `shouldBe` Just (RemovedLine "hello")
+      parseHunkLine " hello" `shouldBe` Just (ContextLine "hello")
+      parseHunkLine "\\ No newline at end of file" `shouldBe` Nothing
 
     it "parses hunk" $ do
       parseHunk
@@ -93,8 +94,7 @@ spec = do
             ]
         )
         `shouldBe` FileDiff
-          { oldFileName = "README.md",
-            newFileName = "README.md",
-            indexLine = "index 1d0f1a3..f0b2c3d 100644",
+          { oldFileName = Just "README.md",
+            newFileName = Just "README.md",
             hunks = [Hunk (LineRange 1 2) (LineRange 1 2) [RemovedLine "hello", AddedLine "world", ContextLine "world"]]
           }

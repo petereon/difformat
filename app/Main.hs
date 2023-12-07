@@ -1,9 +1,8 @@
 module Main where
 
-import Parser (parseDiff)
-import ToJSON (toJSON)
+import Parser (parseDiff, toRepr)
 
 main :: IO ()
 main = do
   contents <- getContents
-  putStrLn $ toJSON (parseDiff contents)
+  putStrLn $ toRepr (parseDiff contents)
