@@ -41,16 +41,12 @@ spec = do
       do
         splitFileDiffs
           ( unlines
-              [ "diff --git a/README.md b/README.md",
-                "index 1d0f1a3..f0b2c3d 100644",
-                "--- a/README.md",
+              [ "--- a/README.md",
                 "+++ b/README.md",
                 "@@ -1,2 +1,2 @@",
                 "-hello",
                 "+world",
                 " world",
-                "diff --git a/.gitignore b/.gitignore",
-                "index 1d0f1a3..f0b2c3d 100644",
                 "--- a/.gitignore",
                 "+++ b/.gitignore",
                 "@@ -1,2 +1,2 @@",
@@ -60,9 +56,7 @@ spec = do
               ]
           )
           `shouldBe` [ unlines
-                         [ "diff --git a/README.md b/README.md",
-                           "index 1d0f1a3..f0b2c3d 100644",
-                           "--- a/README.md",
+                         [ "--- a/README.md",
                            "+++ b/README.md",
                            "@@ -1,2 +1,2 @@",
                            "-hello",
@@ -70,9 +64,7 @@ spec = do
                            " world"
                          ],
                        unlines
-                         [ "diff --git a/.gitignore b/.gitignore",
-                           "index 1d0f1a3..f0b2c3d 100644",
-                           "--- a/.gitignore",
+                         [ "--- a/.gitignore",
                            "+++ b/.gitignore",
                            "@@ -1,2 +1,2 @@",
                            "-hello",
@@ -83,9 +75,7 @@ spec = do
     it "parses diffs into a FileDiff struct" $ do
       parseFileDiff
         ( unlines
-            [ "diff --git a/README.md b/README.md",
-              "index 1d0f1a3..f0b2c3d 100644",
-              "--- a/README.md",
+            [ "--- a/README.md",
               "+++ b/README.md",
               "@@ -1,2 +1,2 @@",
               "-hello",
@@ -97,4 +87,43 @@ spec = do
           { oldFileName = Just "README.md",
             newFileName = Just "README.md",
             hunks = [Hunk (LineRange 1 2) (LineRange 1 2) [RemovedLine "hello", AddedLine "world", ContextLine "world"]]
+          }
+    it "parses diffs into FileDiff struct" $ do
+      parseFileDiff
+        ( unlines
+            [ "diff --git a/factorial.py b/factorial.py",
+              "index abcdef1..1234567 100644",
+              "--- a/factorial.py",
+              "+++ b/factorial.py",
+              "@@ -1,6 +1,7 @@",
+              "def factorial(n):",
+              "+    # Calculate the factorial of a number recursively",
+              "    if n == 0:",
+              "        return 1",
+              "    else:",
+              "-        return n * factorial(n - 1)",
+              "+        return n * factorial(n - 1)",
+              "",
+              "-num = 5",
+              "\\ No newline at end of file",
+              "+num = 6"
+            ]
+        )
+        `shouldBe` FileDiff
+          { oldFileName = Just "factorial.py",
+            newFileName = Just "factorial.py",
+            hunks =
+              [ Hunk
+                  (LineRange 1 6)
+                  (LineRange 1 7)
+                  [ AddedLine "    # Calculate the factorial of a number recursively",
+                    ContextLine "   if n == 0:",
+                    ContextLine "       return 1",
+                    ContextLine "   else:",
+                    RemovedLine "        return n * factorial(n - 1)",
+                    AddedLine "        return n * factorial(n - 1)",
+                    RemovedLine "num = 5",
+                    AddedLine "num = 6"
+                  ]
+              ]
           }
